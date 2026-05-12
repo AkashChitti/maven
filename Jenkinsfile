@@ -5,14 +5,11 @@ pipeline {
         maven 'Maven'
         jdk 'JDK21'
     }
-
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/AkashChitti/maven.git',
-                    credentialsId: 'github-token'
+                git 'https://github.com/AkashChitti/maven.git'
             }
         }
 
@@ -32,32 +29,6 @@ pipeline {
             steps {
                 sh 'mvn package'
             }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
-            }
-        }
-    }
-
-    
-    post {
-
-        success {
-            emailext (
-                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Build succeeded!\nCheck: ${BUILD_URL}",
-                to: "akashchittiappa309@gmail.com"
-            )
-        }
-
-        failure {
-            emailext (
-                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Build failed!\nCheck: ${BUILD_URL}",
-                to: "akashchittiappa309@gmail.com"
-            )
         }
     }
 }
